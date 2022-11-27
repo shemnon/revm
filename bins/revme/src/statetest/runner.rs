@@ -3,25 +3,25 @@ use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
     str::FromStr,
-    sync::{atomic::AtomicBool, Arc, Mutex},
+    sync::{Arc, atomic::AtomicBool, Mutex},
     time::{Duration, Instant},
 };
-
-use sha3::{Digest, Keccak256};
+use std::sync::atomic::Ordering;
 
 use indicatif::ProgressBar;
 use primitive_types::{H160, H256};
-use revm::{db::AccountState, Bytecode, CreateScheme, Env, ExecutionResult, SpecId, TransactTo};
 use ruint::aliases::U256;
-use std::sync::atomic::Ordering;
+use sha3::{Digest, Keccak256};
+use thiserror::Error;
 use walkdir::{DirEntry, WalkDir};
+
+use revm::{Bytecode, CreateScheme, db::AccountState, Env, ExecutionResult, SpecId, TransactTo};
 
 use super::{
     merkle_trie::{log_rlp_hash, state_merkle_trie_root},
     models::{SpecName, TestSuit},
     trace::CustomPrintTracer,
 };
-use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum TestError {
@@ -126,8 +126,8 @@ pub fn execute_test_suit(path: &Path, elapsed: &Arc<Mutex<Duration>>) -> Result<
             H160::from_str("0xdcc5ba93a1ed7e045690d722f2bf460a51c61415").unwrap(),
         ),
     ]
-    .into_iter()
-    .collect();
+        .into_iter()
+        .collect();
 
     for (name, unit) in suit.0.into_iter() {
         // Create database and insert cache
@@ -240,6 +240,10 @@ pub fn execute_test_suit(path: &Path, elapsed: &Arc<Mutex<Duration>>) -> Result<
                     ..
                 } = evm.transact_commit();
                 let timer = timer.elapsed();
+
+                // let gps = gas_used as f64 * 1_000.0 / timer.as_nanos() as f64;
+                // println!("Test {:?} {} Mgps {:.3}, {:?} d{:?}g{:?}v{:?}",
+                //          path, name, gps, spec_name, test.indexes.data, test.indexes.gas, test.indexes.value);
 
                 *elapsed.lock().unwrap() += timer;
 

@@ -22,6 +22,7 @@ pub enum SpecName {
     London,            // done
     Merge,             //done
     #[serde(alias = "Merge+3540+3670")]
+    #[serde(alias = "Merge+3860")]
     MergeEOF,
 }
 

@@ -1,4 +1,5 @@
-use structopt::StructOpt;
+mod cmd;
+mod runner;
 
-#[derive(StructOpt, Debug)]
-pub struct Cmd {}
+pub use cmd::Cmd;
+pub use runner::RunError as Error;

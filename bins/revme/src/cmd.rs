@@ -15,6 +15,8 @@ use thiserror::Error as ThisError;
 pub enum Error {
     #[error("Statetest: {0}")]
     Statetest(statetest::Error),
+    #[error("Run: {0}")]
+    Run(runner::Error),
     #[error("Generic system error")]
     SystemError,
 }
@@ -23,7 +25,7 @@ impl MainCmd {
     pub fn run(&self) -> Result<(), Error> {
         match self {
             Self::Statetest(cmd) => cmd.run().map_err(Error::Statetest),
-            _ => Ok(()),
+            Self::Run(cmd) => cmd.run().map_err(Error::Run),
         }
     }
 }

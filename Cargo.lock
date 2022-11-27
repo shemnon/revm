@@ -1553,6 +1553,7 @@ dependencies = [
  "revm",
  "rlp",
  "ruint",
+ "rustc-hex",
  "serde",
  "serde_derive",
  "serde_json",

@@ -6,3 +6,4 @@ mod trace;
 
 pub use cmd::Cmd;
 pub use runner::TestError as Error;
+pub use trace::CustomPrintTracer;
